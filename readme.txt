@@ -55,6 +55,11 @@ Please visit your permalinks settings page after activating the plugin.
 
 == Changelog ==
 
+= Version 0.3 (9/8/11) =
+
+* Dashboard fix.
+* Other stuff I can't remember.
+
 = Version 0.2.2 (6/23/11) =
 
 * [BUG FIX] An error in the dashboard widget is casuing some large images. Sorry. Always escape.
