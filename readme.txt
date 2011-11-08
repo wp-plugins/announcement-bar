@@ -55,6 +55,11 @@ Please visit your permalinks settings page after activating the plugin.
 
 == Changelog ==
 
+= Version 0.3.1 (11/8/11)
+
+* Feeds updates.
+* WordPress 3.3 check
+
 = Version 0.3 (9/8/11) =
 
 * Dashboard fix.

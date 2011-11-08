@@ -25,7 +25,7 @@ if ( !function_exists( 'thefrosty_dashboard_widget_rss' ) ) {
 			$style .= 'span.jeanaarter { background-position: -60px 0 !important }' . "\n";
 			$style .= 'span.wordcamp { background-position: -92px 0 !important }' . "\n";
 			$style .= 'span.floatoholics { background-position: -124px 0 !important }' . "\n";
-			$style .= 'span.themelit { background-position: -156px 0 !important }' . "\n";
+			$style .= 'span.thefrosty { background-position: -156px 0 !important }' . "\n";
 			$style .= 'span.greatescapecabofishing { background-position: -193px 0 !important }' . "\n";
 			$style .= 'span.wpworkshop { background-position: -221px 0 !important }' . "\n";
 			$style .= '</style>' . "\n";
