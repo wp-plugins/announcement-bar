@@ -64,10 +64,13 @@ if ( !function_exists( 'thefrosty_dashboard_widget_rss' ) ) {
 					$class = str_replace( array( '01/', '02/', '03/', '04/', '05/', '06/', '07/', '08/', '09/', '10/', '11/', '12/' ), '', $class );
 					$class = str_replace( $title, '', $class );
 					$class = str_replace( '/', '', $class );
+					$class = str_replace( 'feedproxy.google', '', $class );
+					$class = str_replace( '~r', '', $class );
+					$class = str_replace( '~', ' ', $class );
 					// Redundant, I know. Can you make a preg_replace for this? ?>
                     
                     <div class="frosty-image">
-                    	<span class="<?php echo $class; ?>">&nbsp;</span>
+                    	<span class="<?php echo strtolower( $class ); ?>">&nbsp;</span>
                     </div>
 					<li>		
 						<a class="rsswidget" href="<?php echo esc_url( $item->get_permalink() ); ?>" title="<?php echo esc_attr( $item->get_description() ); ?>"><?php echo esc_attr( $item->get_title() ); ?></a>		
