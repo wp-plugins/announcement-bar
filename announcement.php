@@ -3,7 +3,7 @@
  * Plugin Name: Announcement Bar
  * Plugin URI: http://austinpassy.com/wordpress-plugins/announcement-bar
  * Description: A fixed position (header) HTML and jQuery pop-up announcemnet bar. <em>currently <strong>&alpha;</strong>lpha testing</em>
- * Version: 0.3.1
+ * Version: 0.3.1.1
  * Author: Austin Passy
  * Author URI: http://austinpassy.com
  *
@@ -36,7 +36,7 @@ if ( !class_exists( 'Announcement_Bar' ) ) {
 		 */
 		function __construct() {
 			register_activation_hook( __FILE__, array( __CLASS__, 'activate' ) );
-			register_uninstall_hook( __FILE__, array( __CLASS__, 'deactivate' ) );
+			register_uninstall_hook( __FILE__, array( 'Announcement_Bar', 'deactivate' ) );
 			
 			/* Define constants */
 			add_action( 'plugins_loaded', array( __CLASS__, 'constants' ) );

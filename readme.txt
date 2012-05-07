@@ -55,6 +55,10 @@ Please visit your permalinks settings page after activating the plugin.
 
 == Changelog ==
 
+= Version 0.3.1.1 (02/16/12)
+
+* Updated `register_uninstall_hook`.
+
 = Version 0.3.1 (11/8/11)
 
 * Feeds updates.
