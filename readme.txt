@@ -3,7 +3,7 @@ Contributors: austyfrosty
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VDD3EDC28RAWS
 Tags: admin, bar, announcement bar, announcement, stats, announcement bar, announcement bar
 Requires at least: 3.2
-Tested up to: 3.3
+Tested up to: 3.4
 Stable tag: trunk
 
 A fixed position (header) HTML with jQuery drop-down announcemnet bar using Custom Post Types.
@@ -54,6 +54,11 @@ Please visit your permalinks settings page after activating the plugin.
 4. The drop-down bar.
 
 == Changelog ==
+
+= Version 0.3.2 (12/3/12)
+
+* Updated Dashboard
+* Removed PHP4 spport
 
 = Version 0.3.1.1 (02/16/12)
 

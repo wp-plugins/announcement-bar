@@ -466,7 +466,7 @@ function announcement_bar_tabs_meta_box() { ?>
         <ul class="tabs">        
             <li class="t1 t"><a class="t1 tab"><?php _e( 'Austin Passy', Announcement_Bar::domain ); ?></a></li>
             <li class="t2 t"><a class="t2 tab"><?php _e( 'WordCampLA', Announcement_Bar::domain ); ?></a></li>
-            <li class="t3 t"><a class="t3 tab"><?php _e( 'TheFrosty', Announcement_Bar::domain ); ?></a></li>  
+            <li class="t3 t"><a class="t3 tab"><?php _e( 'Extendd', Announcement_Bar::domain ); ?></a></li>  
             <li class="t5 t"><a class="t5 tab"><?php _e( 'Float-O-holics', Announcement_Bar::domain ); ?></a></li>  
             <li class="t6 t"><a class="t6 tab"><?php _e( 'Great Escape', Announcement_Bar::domain ); ?></a></li>   
             <li class="t7 t"><a class="t7 tab"><?php _e( 'PDXbyPix', Announcement_Bar::domain ); ?></a></li>             
@@ -476,7 +476,7 @@ function announcement_bar_tabs_meta_box() { ?>
 		if ( function_exists( 'thefrosty_network_feed' ) ) {
         	thefrosty_network_feed( 'http://feeds.feedburner.com/AustinPassy', '1' );
 			thefrosty_network_feed( 'http://feeds.feedburner.com/WordCampLA', '2' );
-       		thefrosty_network_feed( 'http://feeds.feedburner.com/TheFrosty', '3' );
+       		thefrosty_network_feed( 'http://extendd.com/feed', '3' );
         	thefrosty_network_feed( 'http://floatoholics.com/feed', '4' );
         	thefrosty_network_feed( 'http://greatescapecabofishing.com/feed', '5' ); 
         	thefrosty_network_feed( 'http://pdxbypix.com/feed', '6' );  
