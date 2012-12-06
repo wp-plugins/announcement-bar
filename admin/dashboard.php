@@ -123,9 +123,7 @@ class the_frosty_dashboard {
 				$class = str_replace( 'feedproxy.google', '', $class );
 				$class = str_replace( '~r', '', $class );
 				$class = str_replace( '~', ' ', $class );
-				if ( strstr( $class, ' ', true ) ) {
-					$class = strstr( $class, ' ', true ); // Remove everything after the space	
-				}			
+				list( $class, $therest ) = explode( ' ', $class );
 				// Redundant, I know. Can you make a preg_replace for this?
 				
 				$url = preg_replace( '/#.*/', '', esc_url( $item->get_permalink(), null, 'display' ) );
