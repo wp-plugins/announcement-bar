@@ -124,7 +124,9 @@ class the_frosty_dashboard {
 				$class = str_replace( '~r', '', $class );
 				$class = str_replace( '~', ' ', $class );
 				$class = trim( $class );
-				list( $class, $therest ) = explode( ' ', $class );
+				if ( preg_match( '/\s/', $class ) ) {
+					list( $class, $therest ) = explode( ' ', $class );
+				}
 				// Redundant, I know. Can you make a preg_replace for this?
 				
 				$url = preg_replace( '/#.*/', '', esc_url( $item->get_permalink(), null, 'display' ) );
