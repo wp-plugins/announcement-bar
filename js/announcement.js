@@ -98,7 +98,6 @@ jQuery.cookie = function(name, value, options) {
 
 jQuery(document).ready(
 	function($) {
-		var Version	 = $.fn.jquery;
 		
 		function Announcement_Bar() {
 			var announcementbar = $('#announcementbar-container');
@@ -107,11 +106,7 @@ jQuery(document).ready(
 				var top			= $('#announcementbar').outerHeight(true);
 				var shortime	= 300;
 				var longtime	= 1700;
-				
-				if ( Version > '1.6' )
-					var URL			= $(location).prop('href');
-				else
-					var URL			= $(location).attr('href');
+				var URL			= $(location).attr('href');
 					
 				var cookieName	= 'Announcement_Bar';
 				var cookieVal	= $.cookie(cookieName);
@@ -133,7 +128,7 @@ jQuery(document).ready(
 				}
 				
 				/* Close the AnnouncementBar */
-				$('#announcementbar-container .toggle .open').click( function() {
+				$('#announcementbar-container .toggle .open').on('click', function() {
 					//alert( get_cookie( cookieName ) );
 					if ( $('#announcementbar').css('top') != '0' )
 						$('#announcementbar').css('top','0');
@@ -146,7 +141,7 @@ jQuery(document).ready(
 				});
 				
 				/* Open the AnnouncementBar */
-				$('#announcementbar-container .toggle .close').click( function() {
+				$('#announcementbar-container .toggle .close').on('click', function() {
 					$('#announcementbar').slideUp('fast');
 					$('#announcementbar').animate({top: '0'});
 					$('body').animate({paddingTop: '0'});
@@ -156,7 +151,7 @@ jQuery(document).ready(
 					//$.cookie(cookieName, 'closed', { expires: 30, path: '/' });
 				});
 				
-				$('#announcementbar-container .toggle a').click( function(e) {
+				$('#announcementbar-container .toggle a').on('click', function(e) {
 					$('#announcementbar-container .toggle a').toggle();
 					e.preventDefault();
 				});				
@@ -168,15 +163,9 @@ jQuery(document).ready(
 		Announcement_Bar();		
 		
 		// External links		
-		if ( Version > '1.6' ) {
-			$('#announcementbar a').filter(function() {
-				return this.hostname && this.hostname !== location.hostname;
-			}).prop('target','_blank');
-		} else {
-			$('#announcementbar a').filter(function() {
-				return this.hostname && this.hostname !== location.hostname;
-			}).attr('target','_blank');
-		}
+		$('#announcementbar a').filter(function() {
+			return this.hostname && this.hostname !== location.hostname;
+		}).attr('target','_blank');
 	
 	}
 );

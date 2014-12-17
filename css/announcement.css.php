@@ -1,33 +1,12 @@
 <?php
-
-error_reporting(0);
-if ( $returnCSS ) {
-	ob_start();
-} else {
-	header("Content-type: text/css; charset: UTF-8");
-	/** 
-	 * Find wp-load.php
-	 * defualt location from this directory is 
-	 * "../../../../../wp-load.php"
-	 */
-	if ( file_exists( '../../../../wp-load.php' ) ) {
-		
-		require_once( '../../../../wp-load.php' );
-		
-	}
-	elseif ( file_exists( '../../../../../wp-load.php' ) ) {
-		
-		require_once( '../../../../../wp-load.php' );
-		
-	}
-}
-global $wpdb, $announcement_bar;
-?>
+	
+global $announcement_bar;
+header("Content-type: text/css; charset: UTF-8"); ?>
 /**
- * Hellos Bar
- * @use:	esc_attr_e( Announcement_Bar::get_setting( '' ) );
- * @author	Austin Passy
- * @link	http://austinpassy.com
+ * Announcement Bar
+ * @uses:		esc_attr_e( Announcement_Bar::get_setting( '' ) );
+ * @author:	Austin Passy
+ * @link:		http://austin.passy.co
  */
 
 /* Start custom user input */
@@ -189,5 +168,3 @@ body {
 #announcementbar-container .tab a .arrow {
 	font-style: normal;
 }
-
-<?php if ( $returnCSS ) $css = ob_get_clean(); ?>

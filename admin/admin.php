@@ -68,7 +68,7 @@ function announcement_bar_settings_page_init() {
 	global $announcement_bar;
 
 	/* Create the theme settings page. */
-	$announcement_bar->settings_page = add_options_page( __( 'Announcement Bar', Announcement_Bar::domain ), __( 'Announcement Bar', Announcement_Bar::domain ), 6, Announcement_Bar::domain, 'announcement_bar_settings_page' );
+	$announcement_bar->settings_page = add_options_page( __( 'Announcement Bar', Announcement_Bar::domain ), __( 'Announcement Bar', Announcement_Bar::domain ), 'manage_options', Announcement_Bar::domain, 'announcement_bar_settings_page' );
 
 	/* Register the default theme settings meta boxes. */
 	add_action( "load-{$announcement_bar->settings_page}", 'announcement_bar_create_settings_meta_boxes' );
@@ -91,20 +91,20 @@ function announcement_bar_settings() {
 	$plugin_data = get_plugin_data( ANNOUNCEMENT_BAR_DIR . 'announcement.php' );
 	
 	$settings = array(
-		'version' => $plugin_data['Version'],
-		'notice' => true,
+		'version'		=> $plugin_data['Version'],
+		'notice'		=> true,
 		/* Activate */
-		'activate' => false,		
+		'activate'		=> false,		
 		/* Rewrite Slug */	
-		'slug' => 'announcing',
+		'slug'			=> 'announcing',
 		
 		/* Options */
-		'height' => '33px',
-		'background' => '#FFFFE0',
-		'color' => '#444444',
-		'a_color' => '#222222',
-		'size' => '14px',
-		'custom_css' => '',
+		'height'		=> '33px',
+		'background'	=> '#FFFFE0',
+		'color'			=> '#444444',
+		'a_color' 		=> '#222222',
+		'size'			=> '14px',
+		'custom_css'	=> '',
 	);
 	return apply_filters( 'announcement_bar_settings', $settings );
 }
@@ -272,7 +272,7 @@ function announcement_bar_activate_meta_box() {
  */
 function announcement_bar_announcement_meta_box() { ?>
 
-	<iframe allowtransparency="true" src="http://austinpassy.com/custom-login.php" scrolling="no" style="height:50px;width:100%;">
+	<iframe allowtransparency="true" src="http://austin.passy.co/custom-login.php" scrolling="no" style="height:50px;width:100%;">
 	</iframe><!-- .form-table --><?php
 }
 
@@ -465,21 +465,15 @@ function announcement_bar_tabs_meta_box() { ?>
     	
         <ul class="tabs">        
             <li class="t1 t"><a class="t1 tab"><?php _e( 'Austin Passy', Announcement_Bar::domain ); ?></a></li>
-            <li class="t2 t"><a class="t2 tab"><?php _e( 'WordCampLA', Announcement_Bar::domain ); ?></a></li>
-            <li class="t3 t"><a class="t3 tab"><?php _e( 'Extendd', Announcement_Bar::domain ); ?></a></li>  
-            <li class="t5 t"><a class="t5 tab"><?php _e( 'Float-O-holics', Announcement_Bar::domain ); ?></a></li>  
-            <li class="t6 t"><a class="t6 tab"><?php _e( 'Great Escape', Announcement_Bar::domain ); ?></a></li>   
-            <li class="t7 t"><a class="t7 tab"><?php _e( 'PDXbyPix', Announcement_Bar::domain ); ?></a></li>             
+            <li class="t2 t"><a class="t2 tab"><?php _e( 'Frosty Media', Announcement_Bar::domain ); ?></a></li>
+            <li class="t3 t"><a class="t3 tab"><?php _e( 'Frosty Media Plugins', Announcement_Bar::domain ); ?></a></li>             
         </ul>
         
 		<?php 
 		if ( function_exists( 'thefrosty_network_feed' ) ) {
         	thefrosty_network_feed( 'http://feeds.feedburner.com/AustinPassy', '1' );
-			thefrosty_network_feed( 'http://feeds.feedburner.com/WordCampLA', '2' );
-       		thefrosty_network_feed( 'http://extendd.com/feed', '3' );
-        	thefrosty_network_feed( 'http://floatoholics.com/feed', '4' );
-        	thefrosty_network_feed( 'http://greatescapecabofishing.com/feed', '5' ); 
-        	thefrosty_network_feed( 'http://pdxbypix.com/feed', '6' );  
+       		thefrosty_network_feed( 'http://frosty.media/feed', '2' );
+       		thefrosty_network_feed( 'http://frosty.media/feed?post_type=plugin', '3' );
 		} ?>
         
     	</div>
@@ -614,7 +608,7 @@ function announcement_bar_admin_warnings() {
 		function announcement_bar_warning_slug() {
 			global $announcement_bar;
 			$num_posts = wp_count_posts( 'AnnouncementBar' );
-			$num = number_format_i18n( $num_posts->publish );
+			$num = isset( $num_posts->publish ) ? number_format_i18n( $num_posts->publish ) : '0';
 			$slug = Announcement_Bar::get_setting( 'slug' );
 
 			if ( Announcement_Bar::get_setting( 'notice' ) == true ) { ?>

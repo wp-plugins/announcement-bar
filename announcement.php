@@ -1,13 +1,13 @@
 <?php
 /**
  * Plugin Name: Announcement Bar
- * Plugin URI: http://austinpassy.com/wordpress-plugins/announcement-bar
+ * Plugin URI: http://austin.passy.co/wordpress-plugins/announcement-bar
  * Description: A fixed position (header) HTML and jQuery pop-up announcemnet bar. <em>currently <strong>&alpha;</strong>lpha testing</em>
- * Version: 0.3.2
+ * Version: 0.4
  * Author: Austin Passy
- * Author URI: http://austinpassy.com
+ * Author URI: http://austin.passy.co
  *
- * @copyright 2009 - 2013
+ * @copyright 2009 - 2015
  * @author Austin Passy
  * @link http://frostywebdesigns.com/
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
@@ -22,8 +22,26 @@
 if ( !class_exists( 'Announcement_Bar' ) ) {
 	class Announcement_Bar {
 		
+		/** Singleton *************************************************************/
+		private static $instance;
+		
 		const domain	= 'announcement-bar';
-		const version	= '0.3.2';
+		const version	= '0.4';
+		
+		var $settings;
+		
+		/**
+		 * Main Instance
+		 *
+		 * @staticvar 	array 	$instance
+		 * @return 		The one true instance
+		 */
+		public static function instance() {
+			if ( ! isset( self::$instance ) && ! ( self::$instance instanceof Announcement_Bar ) ) {
+				self::$instance = new Announcement_Bar;
+			}
+			return self::$instance;
+		}
 		
 		/**
 		 * Sets up the Announcement_Bar plugin and loads files at the appropriate time.
@@ -31,49 +49,55 @@ if ( !class_exists( 'Announcement_Bar' ) ) {
 		 * @since 0.2
 		 */
 		function __construct() {
-			register_activation_hook( __FILE__, array( __CLASS__, 'activate' ) );
-			register_uninstall_hook( __FILE__, array( 'Announcement_Bar', 'deactivate' ) );
+			$this->register_init();
 			
 			/* Define constants */
-			add_action( 'plugins_loaded', array( __CLASS__, 'constants' ) );
+			add_action( 'plugins_loaded',					array( $this, 'constants' ) );
 			
-			add_action( 'plugins_loaded', array( __CLASS__, 'required' ) );
-			add_action( 'admin_init', array( __CLASS__, 'localize' ) );
+			add_action( 'plugins_loaded',					array( $this, 'required' ) );
+			add_action( 'admin_init',						array( $this, 'localize' ) );
 			
 			/* Print script */
-			add_action( 'wp_print_scripts', array( __CLASS__, 'enqueue_script' ) );
+			add_action( 'wp_enqueue_scripts',			array( $this, 'enqueue_script' ) );
 			
 			/* Print style */
-			add_action( 'wp_print_styles', array( __CLASS__, 'enqueue_style' ) );
+			add_action( 'wp_enqueue_scripts',			array( $this, 'enqueue_style' ) );
+			add_action( 'wp_ajax_announcment_bar_style',			array( $this, 'php_style' ) );
+			add_action( 'wp_ajax_nopriv_announcment_bar_style',	array( $this, 'php_style' ) );
 			
 			/* Register post_types & multiple templates */
-			add_action( 'init', array( __CLASS__, 'register_post_type' ) );
+			add_action( 'init',							array( $this, 'register_post_type' ) );
 			
 			/* Column manager */
-			add_filter( 'manage_posts_columns', array( __CLASS__, 'columns' ), 10, 2 );
-			add_action( 'manage_posts_custom_column', array( __CLASS__, 'column_data' ), 10, 2 );			
+			add_filter( 'manage_posts_columns',			array( $this, 'columns' ), 10, 2 );
+			add_action( 'manage_posts_custom_column',	array( $this, 'column_data' ), 10, 2 );			
 			
 			/* Save the meta data */	
-			add_action( 'save_post', array( __CLASS__, 'save_meta_box' ), 10, 2 );
+			add_action( 'save_post',						array( $this, 'save_meta_box' ), 10, 2 );
 			
-			add_action( 'template_redirect', array( __CLASS__, 'count_and_redirect' ) ) ;
+			add_action( 'template_redirect',				array( $this, 'count_and_redirect' ) ) ;
 			
 			/* Add HTML */
-			add_action( 'wp_footer', array( __CLASS__, 'html' ), 999 );
+			add_action( 'wp_footer',						array( $this, 'html' ), 999 );
 		
 			do_action( 'announcement_bar_loaded' );
 		}
 		
-		function activate() {
-			self::register_post_type();
+		private function register_init() {
+			register_activation_hook( __FILE__,			array( 'Announcement_Bar', 'activate' ) );
+			register_uninstall_hook( __FILE__,			array( 'Announcement_Bar', 'deactivate' ) );
+		}
+		
+		public static function activate() {
+			$this->register_post_type();
 			flush_rewrite_rules();
 		}
 		
-		function deactivate() {
+		public static function deactivate() {
 			flush_rewrite_rules();
 		}
 		
-		function constants() {		
+		public function constants() {		
 			/* Set constant path to the Cleaner Gallery plugin directory. */
 			define( 'ANNOUNCEMENT_BAR_DIR', plugin_dir_path( __FILE__ ) );
 			define( 'ANNOUNCEMENT_BAR_ADMIN', trailingslashit( ANNOUNCEMENT_BAR_DIR ) . 'admin/' );
@@ -87,12 +111,13 @@ if ( !class_exists( 'Announcement_Bar' ) ) {
 			define( 'ANNOUNCEMENT_BAR_POST_TYPE', apply_filters( 'announcement_bar_post_type', 'announcement' ) );
 		}
 		
-		function required() {
-			if ( is_admin() )
-			require_once( trailingslashit( ANNOUNCEMENT_BAR_ADMIN ) . 'admin.php' );
+		public function required() {
+			if ( is_admin() ) {
+				require_once( trailingslashit( ANNOUNCEMENT_BAR_ADMIN ) . 'admin.php' );
+			}
 		}
 		
-		function localize() {
+		public function localize() {
 			load_plugin_textdomain( self::domain, null, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 		}
 
@@ -102,16 +127,15 @@ if ( !class_exists( 'Announcement_Bar' ) ) {
 		 *
 		 * @since 0.1
 		 */
-		function get_setting( $option = '' ) {
-			global $announcement_bar;
-		
-			if ( !$option )
-				return false;
-		
-			if ( !isset( $announcement_bar->settings ) )
-				$announcement_bar->settings = get_option( 'announcement_bar_settings' );
-		
-			return $announcement_bar->settings[$option];
+		public static function get_setting( $option = '', $default = false ) {
+			
+			$options = get_option( 'announcement_bar_settings', array() );
+			
+			if ( isset( $options[$option] ) ) {
+				return $options[$option];
+			}
+			
+			return $default;
 		}
 
 		/**
@@ -119,7 +143,7 @@ if ( !class_exists( 'Announcement_Bar' ) ) {
 		 *
 		 * @since 0.01
 		 */
-		function is_version( $version = '3.0' ) {
+		public static function is_version( $version = '3.0' ) {
 			global $wp_version;
 			
 			if ( version_compare( $wp_version, $version, '<' ) ) {
@@ -132,22 +156,25 @@ if ( !class_exists( 'Announcement_Bar' ) ) {
 		 * Add script
 		 * @since 0.01
 		 */
-		function enqueue_script() {
-			global $announcement_bar;
+		public function enqueue_script() {
 			
 			if ( !is_admin() && self::get_setting( 'activate' ) == true )
-				wp_enqueue_script( self::domain, ANNOUNCEMENT_BAR_JS . 'announcement.js', array( 'jquery' ), '0.1', true );
+				wp_enqueue_script( self::domain, ANNOUNCEMENT_BAR_JS . 'announcement.js', array( 'jquery' ), self::version, true );
 		}
 
 		/**
 		 * Add stylesheet
 		 * @since 0.01
 		 */
-		function enqueue_style() {
-			global $announcement_bar;
+		public function enqueue_style() {
 			
 			if ( !is_admin() && self::get_setting( 'activate' ) == true )
-				wp_enqueue_style( self::domain, ANNOUNCEMENT_BAR_CSS . 'announcement.css.php', false, 0.1, 'screen' );
+				wp_enqueue_style( self::domain, add_query_arg( 'action', 'announcment_bar_style', admin_url( 'admin-ajax.php' ) ), false, self::version, 'screen' );
+		}
+		
+		public function php_style() {
+			require_once( ANNOUNCEMENT_BAR_DIR . 'css/announcement.css.php' );
+			exit;
 		}
 		
 		/**
@@ -155,8 +182,7 @@ if ( !class_exists( 'Announcement_Bar' ) ) {
 		 * @ref http://wordpress.pastebin.com/VCeaJBt8
 		 * Thanks to @_mfields
 		 */
-		function register_post_type() {
-			global $announcement_bar;
+		public function register_post_type() {
 			
 			$slug = sanitize_title_with_dashes( self::get_setting( 'slug' ) );
 			
@@ -165,18 +191,18 @@ if ( !class_exists( 'Announcement_Bar' ) ) {
 			
 			/* Labels for the announcement post type. */
 			$labels = array(
-				'menu_name'				=> __( 'Announcements', self::domain ),
+				'menu_name'			=> __( 'Announcements', self::domain ),
 				'name'					=> __( 'Announcements', self::domain ),
-				'singular_name'			=> __( 'Announcement', self::domain ),
+				'singular_name'		=> __( 'Announcement', self::domain ),
 				'add_new'				=> __( 'Add New', self::domain ),
 				'add_new_item'			=> __( 'Add New Announcement', self::domain ),
 				'edit'					=> __( 'Edit', self::domain ),
-				'edit_item'				=> __( 'Edit an Announcement', self::domain ),
+				'edit_item'			=> __( 'Edit an Announcement', self::domain ),
 				'new_item'				=> __( 'New Announcement', self::domain ),
 				'view'					=> __( 'View Announcements', self::domain ),
-				'view_item'				=> __( 'View Announcement', self::domain ),
+				'view_item'			=> __( 'View Announcement', self::domain ),
 				'search_items'			=> __( 'Search Announcements', self::domain ),
-				'not_found'				=> __( 'No Announcements found', self::domain ),
+				'not_found'			=> __( 'No Announcements found', self::domain ),
 				'not_found_in_trash'	=> __( 'No Announcements found in Trash', self::domain ),
 			);
 		
@@ -187,18 +213,18 @@ if ( !class_exists( 'Announcement_Bar' ) ) {
 				'capability_type'		=> 'post',
 				'public'				=> true,
 				'can_export'			=> true,
-				'query_var'				=> true,
+				'query_var'			=> true,
 				'rewrite'				=> array( 'slug' => $slug, 'with_front' => false ),
-				'menu_icon'				=> plugins_url( 'admin/announcement.png', __FILE__ ),
+				'menu_icon'			=> 'dashicons-megaphone',
 				'supports'				=> array( 'title', 'entry-views' ),
-				'register_meta_box_cb'	=> array( __CLASS__, 'add_meta_box' ),
+				'register_meta_box_cb'=> array( $this, 'add_meta_box' ),
 			);
 		
 			/* Register the announcements post type. */
 			register_post_type( ANNOUNCEMENT_BAR_POST_TYPE, $args );
 		}
 		
-		function columns( $columns, $post_type ) {				
+		public function columns( $columns, $post_type ) {				
 			if ( ANNOUNCEMENT_BAR_POST_TYPE == $post_type ) {
 				$columns = array(
 					'cb'			=> '<input type="checkbox" />',
@@ -212,7 +238,7 @@ if ( !class_exists( 'Announcement_Bar' ) ) {
 			return $columns;
 		}
 		
-		function column_data( $column_name, $post_id ) {
+		public function column_data( $column_name, $post_id ) {
 			global $post_type, $post, $user;
 			
 			if ( ANNOUNCEMENT_BAR_POST_TYPE == $post_type ) {
@@ -226,7 +252,7 @@ if ( !class_exists( 'Announcement_Bar' ) ) {
 					$perm	= get_permalink( $post->ID );
 					$url	= get_post_meta( $post->ID, '_announcement_link', true );		
 					//echo make_clickable( esc_url( $perm ? $perm : '' ) );
-					echo '<a href="'.$perm.'">'.esc_url( $url ? $url : $perm ).'</a>';
+					echo '<a href="' . esc_url( $perm ) . '">' . esc_url( $url ? $url : $perm ) . '</a>';
 				elseif( 'count' == $column_name ) :
 					$count = get_post_meta( $post->ID, '_announcement_count', true );
 					echo esc_html( $count ? $count : 0 );
@@ -237,14 +263,14 @@ if ( !class_exists( 'Announcement_Bar' ) ) {
 		/**
 		 * Register the metaboxes
 		 */
-		function add_meta_box() {	
-			add_meta_box( 'AnnouncementBar-meta-box', __( 'Announcement', self::domain ), array( __CLASS__, 'meta_box_settings' ), ANNOUNCEMENT_BAR_POST_TYPE, 'normal', 'default' );
+		public function add_meta_box() {	
+			add_meta_box( 'AnnouncementBar-meta-box', __( 'Announcement', self::domain ), array( $this, 'meta_box_settings' ), ANNOUNCEMENT_BAR_POST_TYPE, 'normal', 'default' );
 		}
 		
 		/**
 		 * The announcement metabox
 		 */
-		function meta_box_settings() {
+		public function meta_box_settings() {
 			global $post;
 			
 			$announcement	= get_post_meta( $post->ID, '_announcement_content', 	true );
@@ -274,14 +300,14 @@ if ( !class_exists( 'Announcement_Bar' ) ) {
 		/**
 		 * Save the metabox aata
 		 */
-		function save_meta_box( $post_id, $post ) {
+		public function save_meta_box( $post_id, $post ) {
 				
 			/* Make sure the form is valid. */
 			if ( !isset( $_POST['announcement_meta_box_nonce'] ) || !wp_verify_nonce( $_POST['announcement_meta_box_nonce'], basename( __FILE__ ) ) )
 				return $post_id;
 			
 			// Is the user registered as a subscriber.
-			if ( !current_user_can( 'manage_links', $post_id ) )
+			if ( !current_user_can( 'publish_posts', $post_id ) )
 				return $post_id;
 				
 			$meta['_announcement_content']	= esc_html( $_POST['_announcement_content'] );
@@ -300,7 +326,7 @@ if ( !class_exists( 'Announcement_Bar' ) ) {
 			}
 		}
 		
-		function count_and_redirect() {
+		public function count_and_redirect() {
 				
 			if ( !is_singular( ANNOUNCEMENT_BAR_POST_TYPE ) )
 				return;
@@ -308,7 +334,7 @@ if ( !class_exists( 'Announcement_Bar' ) ) {
 			global $wp_query;
 			
 			// Update the count
-			$count = isset( $wp_query->post->ID ) ? get_post_meta( $wp_query->post->ID, '_announcement_count', true ) : 0;
+			$count = (int) isset( $wp_query->post->ID ) ? get_post_meta( $wp_query->post->ID, '_announcement_count', true ) : 0;
 			update_post_meta( $wp_query->post->ID, '_announcement_count', $count + 1 );
 		
 			// Handle the redirect
@@ -328,8 +354,8 @@ if ( !class_exists( 'Announcement_Bar' ) ) {
 		/**
 		 * Add the HTML
 		 */
-		function html() {
-			global $post, $announcement_bar;
+		public function html() {
+			global $post;
 			
 			if ( self::get_setting( 'activate' ) == true ) {
 			
@@ -380,5 +406,4 @@ if ( !class_exists( 'Announcement_Bar' ) ) {
 		
 	}
 };
-
-$announcement = new Announcement_Bar; ?>
+$GLOBALS['announcement_bar'] = Announcement_Bar::instance();
