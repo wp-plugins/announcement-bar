@@ -3,10 +3,10 @@ Contributors: austyfrosty
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VDD3EDC28RAWS
 Tags: admin, bar, announcement bar, announcement, stats, announcement bar, announcement bar
 Requires at least: 3.2
-Tested up to: 4.1
+Tested up to: 4.2
 Stable tag: trunk
 
-A fixed position (header) HTML with jQuery drop-down announcemnet bar using Custom Post Types.
+A fixed position (header) HTML with jQuery drop-down announcement bar using Custom Post Types.
 
 == Description ==
 
@@ -16,10 +16,10 @@ Upon installation, you can choose the prefix for your post type. Be sure to choo
 
 **New**: A cookie is added and deleted when you toggle the bar open and closed. Depending on the position of the bar when you leave the page is where it will be when you re-visit the site.
 
-For question please visit my blog @ [http://austinpassy.com](http://austinpassy.com/wordpress-plugins/announcement-bar/)
+For question please visit my blog @ [http://austin.passy.co](http://austin.passy.co/wordpress-plugins/announcement-bar/)
 
 **The Link**
-Please be awware when publishing a post, as of right now, you have to fill in the content with non-html text and add a link into the link field. This link is really the permalink and is what gets counted when clicked on. It will also revert to the home page if missing, and not count againts the counter. If you're getting 404 issues when visiting the permalink page, please refer to the FAQ section.
+Please be aware when publishing a post, as of right now, you have to fill in the content with non-html text and add a link into the link field. This link is really the permalink and is what gets counted when clicked on. It will also revert to the home page if missing, and not count against the counter. If you're getting 404 issues when visiting the permalink page, please refer to the FAQ section.
 
 == Installation ==
 
@@ -55,6 +55,10 @@ Please visit your permalinks settings page after activating the plugin.
 
 == Changelog ==
 
+= Version 0.4.1 (04/23/15)
+
+* Fix unexpected error during activation.
+
 = Version 0.4 (12/17/14)
 
 * LOTS of code cleanup.
@@ -64,7 +68,7 @@ Please visit your permalinks settings page after activating the plugin.
 = Version 0.3.2 (12/3/12)
 
 * Updated Dashboard
-* Removed PHP4 spport
+* Removed PHP4 support
 
 = Version 0.3.1.1 (02/16/12)
 
@@ -82,7 +86,7 @@ Please visit your permalinks settings page after activating the plugin.
 
 = Version 0.2.2 (6/23/11) =
 
-* [BUG FIX] An error in the dashboard widget is casuing some large images. Sorry. Always escape.
+* [BUG FIX] An error in the dashboard widget is causing some large images. Sorry. Always escape.
 
 = Version 0.2.1 (6/13/11) =
 
@@ -97,7 +101,7 @@ Please visit your permalinks settings page after activating the plugin.
 
 = Version 0.1.5 (5/16/11) =
 
-* Updated `.attr()` to `.prop()` for jQuery 1.6.x. New minimun install requirements.
+* Updated `.attr()` to `.prop()` for jQuery 1.6.x. New minimum install requirements.
 
 = Version 0.1.4 (3/30/11) =
 
